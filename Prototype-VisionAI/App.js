@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { useEffect, useState, useRef } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import { Camera } from "expo-camera";
 import Icon from "react-native-vector-icons/FontAwesome";
 
@@ -8,6 +8,8 @@ export default function App() {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
+
+  const cameraRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -26,14 +28,33 @@ export default function App() {
   if (hasPermission === false) {
     return <Text>This is the Photo Page</Text>;
   }
+
+  const takePhoto = async () => {
+    if (cameraRef) {
+      try {
+        let photo = await cameraRef.current.takePictureAsync({
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+        return photo;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       {isCameraVisible ? (
-        <Camera style={styles.camera} type={type}>
+        <Camera style={styles.camera} type={type} ref={cameraRef}>
           <View style={styles.cameraUiContainer}>
             <TouchableOpacity
               style={styles.cameraButton}
-              onPress={toggleCamera}
+              onPress={async () => {
+                const r = await takePhoto();
+                Alert.alert("test", JSON.stringify(r));
+              }}
             >
               <Icon style={styles.cameraButtonIcon} name="camera" size={42} />
             </TouchableOpacity>
