@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import { useEffect, useState, useRef } from "react";
 import { API_KEY } from "@env";
 import {
@@ -129,6 +128,7 @@ export default function App() {
         </View>
       ) : (
         <View style={styles.mainContainer}>
+          <Text style={styles.title}>Google Cloud Vision API - Prototype</Text>
           <View style={styles.buttonsContainer}>
             <TouchableOpacity style={styles.button} onPress={toggleCamera}>
               <Icon style={styles.iconButton} name="camera" size={22} />
@@ -297,5 +297,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     borderRadius: 15,
+  },
+
+  title: {
+    position: "absolute",
+    alignSelf: "center",
+    top: "-4%",
+    fontWeight: "700",
   },
 });
